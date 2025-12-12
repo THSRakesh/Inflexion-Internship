@@ -1,0 +1,54 @@
+<mvc:View
+    controllerName="pro_login.controller.Register"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+    <Page title="Inflexion" class="myBackground">
+        <VBox
+            alignItems="Center"
+            justifyContent="Center"
+            width="100%"
+            height="100%">
+        <VBox
+            alignItems="Center"
+            justifyContent="Center"
+            width="40%"
+            height="100%"
+            class="sapUiLargeMargin loginColor">
+
+            <HBox alignItems="Center">
+                <Image src="img/inflexion_logo.png" width="60%" height="30%"/>
+                <Title text="Inflexion" class="title"/>
+            </HBox>
+
+            <Text text="Registration" class="loginTitle sapUiMediumMarginBottom sapUiSmallMarginTop" />
+            <HBox alignItems="Center" >
+                <Label text="Email" design="Bold" width="130px" textAlign="End" required="true"/>
+                <Input value="{register>/email}" placeholder="Enter Email-Id" class="sapUiLargeMarginBegin" width="250px"/>
+            </HBox>
+            <HBox alignItems="Center" >
+                <Label text="Password" design="Bold" width="130px" textAlign="End" required="true"/>
+                <Input value="{register>/password}" placeholder="Enter Password" class="sapUiLargeMarginBegin" width="250px" type="Password"/>
+            </HBox>
+            <HBox alignItems="Center" >
+                <Label text="Confirm Password" design="Bold" width="130px" textAlign="End" required="true"/>
+                <Input value="{register>/confirmPassword}" placeholder="Confirm Password" class="sapUiLargeMarginBegin" width="250px" type="Password"/>
+            </HBox>
+            <HBox alignItems="Center" >
+                <Label text="First Name" design="Bold" width="130px" textAlign="End" required="true"/>
+                <Input value="{register>/firstName}" placeholder="First Name" class="sapUiLargeMarginBegin" width="250px"/>
+            </HBox>
+            <HBox alignItems="Center" >
+                <Label text="Last Name" design="Bold" width="130px" textAlign="End" required="true"/>
+                <Input value="{register>/lastName}" placeholder="Last Name" class="sapUiLargeMarginBegin" width="250px"/>
+            </HBox>
+            <Button text="SignUp" press=".onSignUp" width="250px" type="Emphasized"/>
+            <HBox>
+                <Text text="already have an account?" class="sapUiSmallMarginTop sapUiLargeMarginBegin"/>
+                <Link text="Login" press=".onLogin" class="sapUiSmallMarginTop sapUiSmallMarginBegin"/>
+            </HBox>
+        </VBox>
+        </VBox>
+    </Page>
+</mvc:View>

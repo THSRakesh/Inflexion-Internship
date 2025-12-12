@@ -1,0 +1,121 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+	"id": "pro_login",
+	"i18n": "i18n/i18n.properties",
+	"title": "Hello",
+	"description": "App description",
+	"type": "application",
+	"applicationVersion": {
+	  "version": "1.0.0"
+	}
+  },
+  "sap.ui": {
+	"technology": "UI5",
+	"deviceTypes": {
+		"desktop": true,
+		"tablet": true,
+		"phone": true
+	}
+  },
+  "sap.ui5": {
+	"dependencies": {
+	  "minUI5Version": "1.108.0",
+	  "libs": {
+		"sap.ui.core": {},
+		"sap.m": {}
+	  }
+	},
+	"models": {
+	  "i18n": {
+		"type": "sap.ui.model.resource.ResourceModel",
+		"settings": {
+		  "bundleName": "pro_login.i18n.i18n",
+		  "supportedLocales": [""],
+		  "fallbackLocale": ""
+		}
+	  }
+	},
+	"rootView": {
+		"viewName": "pro_login.view.Login",
+		"type": "XML"
+	},
+	"resources":{
+		"css":[
+            {
+			    "uri":"css/style.css"
+		    }
+        ]
+	},
+	"routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "type": "View",
+        "viewType": "XML",
+        "viewPath": "pro_login.view",
+        "controlId": "Login",
+        "controlAggregation": "pages"
+      },
+	  "routes":[
+		{
+            "pattern":"",
+            "name":"Login",
+            "target":"Login"
+        },
+        {
+            "pattern":"register",
+            "name":"Register",
+            "target":"Register"
+        },
+		{
+            "pattern":"email",
+            "name":"Email",
+            "target":"Email"
+        },
+		{
+			"pattern":"home/employees",
+			"name":"DisplayEmp",
+			"target":"Employee"
+		},
+		{
+			"pattern":"home/{userId}",
+			"name":"Home",
+			"target":"Home"
+		},
+		{
+			"pattern":"changePassword",
+			"name":"Password",
+			"target":"Password"
+		},
+		{
+			"pattern":"createEmployee",
+			"name":"Create",
+			"target":"Create"
+		}
+	  ],
+	  "targets":{
+		"Login":{
+            "viewName":"Login"
+        },
+        "Register":{
+            "viewName":"Register"
+        },
+		"Email":{
+			"viewName":"Email"
+		},
+		"Home":{
+			"viewName":"Home"
+		},
+		"Employee":{
+			"viewName":"Employee"
+		},
+		"Password":{
+			"viewName":"Password"
+		},
+		"Create":{
+			"viewName":"Create"
+		}
+	  }
+    }
+  }
+}

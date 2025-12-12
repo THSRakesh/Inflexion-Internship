@@ -1,0 +1,100 @@
+<mvc:View
+    controllerName="pro_login.controller.Employee"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.f"
+    xmlns:fb="sap.ui.comp.filterbar"
+    displayBlock="true">
+
+        <f:DynamicPage id="manageEmployee" headerExpanded="true">
+            <f:title>
+                <f:DynamicPageTitle>                
+                    <f:heading>
+                        <HBox alignItems="Center">
+                            <Button 
+                            icon="sap-icon://nav-back" 
+                            press=".onBack"
+                            class="sapUiTinyMarginEnd"/>
+                            <Image src="img/inflexion_logo.png" width="50%" height="20%"/>
+                            <Title text="Inflexion"/>
+                        </HBox>
+                    </f:heading>
+                </f:DynamicPageTitle>
+            </f:title>
+            <f:header>
+                <f:DynamicPageHeader pinnable="false">
+                    <f:content>
+                        <Title text="Manage Employee"/>
+                        <fb:FilterBar id="voFilterBar" showFilterConfiguration="false" useToolbar="false" clear="onClear" search="onSearch" showGoOnFB="true" showClearOnFB="true" class="sapUiSmallMarginTop">
+                            
+                            <fb:filterGroupItems>
+                                <fb:FilterGroupItem name="A" label="Employee Name" visibleInFilterBar="true" groupName="Optional">
+                                    <fb:control>
+                                        <Input value="{oFilter>/name}" placeholder="Enter employee name"/>
+                                    </fb:control>
+                                </fb:FilterGroupItem>
+                                <fb:FilterGroupItem name="B" label="Department" visibleInFilterBar="true" groupName="optional">
+                                    <fb:control>
+                                        <ComboBox selectedKey="{oFilter>/dep}"
+                                            items="{oDep>/departments}">
+                                            <core:Item key="{oDep>key}" text="{oDep>text}"/>
+                                        </ComboBox>
+                                    </fb:control>
+                                </fb:FilterGroupItem>
+                                <fb:FilterGroupItem name="C" label="Location" visibleInFilterBar="true" groupName="optional">
+                                    <fb:control>
+                                        <Input value="{oFilter>/loc}" placeholder="Enter Address"/>
+                                    </fb:control>
+                                </fb:FilterGroupItem>
+                            </fb:filterGroupItems>
+
+                        </fb:FilterBar>
+                    </f:content>
+                </f:DynamicPageHeader>
+            </f:header>
+            <f:content>
+                <Table id="employeeData" items="{oData>/}" sticky="ColumnHeaders">
+                     <headerToolbar>
+                        <Toolbar>
+                            <Title text="Employee Details" />
+                            <ToolbarSpacer/>
+                            <Button text="Create" press=".onCreate" type="Emphasized" class="sapUiMediumMarginEnd"/>
+                        </Toolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="Employee Id"/>
+                        </Column>
+                        <Column>
+                            <Text text="Employee Name"/>
+                        </Column>
+                        <Column>
+                            <Text text="Employee Email"/>
+                        </Column>
+                        <Column>
+                            <Text text="Employee Gender"/>
+                        </Column>
+                        <Column>
+                            <Text text="Department"/>
+                        </Column>
+                        <Column>
+                            <Text text="Location"/>
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{oData>id}"/>
+                                <Text text="{oData>name}"/>
+                                <Text text="{oData>email}"/>
+                                <Text text="{oData>gender}"/>
+                                <Text text="{oData>department}"/>
+                                <Text text="{oData>location}"/>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </f:content>
+        </f:DynamicPage>
+</mvc:View>

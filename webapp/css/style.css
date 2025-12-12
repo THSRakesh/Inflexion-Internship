@@ -1,0 +1,22 @@
+.title{
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.loginTitle{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.labelSize{
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.myBackground{
+    background-color:cornflowerblue
+}
+
+.loginColor{
+    background-color: rgb(179, 201, 219);
+}
