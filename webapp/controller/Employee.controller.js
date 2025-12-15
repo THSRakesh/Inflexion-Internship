@@ -2,9 +2,10 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
+    "sap/m/MessageBox",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator"
-], function(Controller, JSONModel, MessageToast, Filter, FilterOperator){
+], function(Controller, JSONModel, MessageToast, MessageBox, Filter, FilterOperator){
     "use strict";
     return Controller.extend("pro_login.controller.Employee", {
         onInit(){
@@ -43,7 +44,7 @@ sap.ui.define([
                     MessageToast.show("Data Loaded");
                 },
                 error:function(err){
-                    MessageToast.show("Failed to Load Data");
+                    MessageBox.error("Failed to Load Data");
                     console.log(err);
                 }
             })
@@ -83,6 +84,13 @@ sap.ui.define([
         },
         onCreate(){
             this.oRouter.navTo("Create");
+        },
+        onRowSelect(oEvent){
+            var oItem=oEvent.getParameter("listItem");
+            var oData=oItem.getBindingContext("oData").getObject();
+            MessageToast.show(oData.id);
+            var id=oData.id;
+            this.oRouter.navTo("Details",{id:id});
         }
     })
 })

@@ -27,7 +27,8 @@ import lombok.Setter;
         @FieldResult(name="department", column = "department"),
         @FieldResult(name="location", column = "location"),
         @FieldResult(name="salary", column = "salary"),
-        @FieldResult(name="reporting_to", column = "reporting_to")
+        @FieldResult(name="reporting_to", column = "reporting_to"),
+        @FieldResult(name="reportingto_text", column = "reportingto_text")
     })
 })
 public class Employee {
@@ -40,4 +41,5 @@ public class Employee {
     private String location;
     private Long salary;
     private String reporting_to;
+    private String reportingto_text;
 }

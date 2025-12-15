@@ -91,6 +91,16 @@
 			"pattern":"createEmployee",
 			"name":"Create",
 			"target":"Create"
+		},
+		{
+			"pattern":"details/{id}",
+			"name":"Details",
+			"target":"Create"
+		},
+		{
+			"pattern":"details-edit/{id}",
+			"name":"Details-edit",
+			"target":"Create"
 		}
 	  ],
 	  "targets":{

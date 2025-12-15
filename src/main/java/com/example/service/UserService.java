@@ -11,7 +11,9 @@ public interface UserService {
     ResponseEntity<?> registerUser(UserDAO userDAO);
     ResponseEntity<?> loginUser(UserDAO userDAO);
     List<Employee>getEmpData();
+    Employee getEmpData(int id);
     ResponseEntity<?> forgotPassword(UserDAO userDAO);
     ResponseEntity<?> changePassword(UserDAO userDAO);
     ResponseEntity<?> createEmployee(Employee employee);
+    ResponseEntity<?> updateEmployee(Employee employee);
 }

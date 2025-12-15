@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.DAO.ResponseDAO;
@@ -45,6 +47,12 @@ public class UserController {
     }
 
     @CrossOrigin(origins= "*")
+    @GetMapping("/employee/{id}")
+    public Employee getEmpData(@PathVariable int id){
+        return userService.getEmpData(id);
+    }
+
+    @CrossOrigin(origins= "*")
     @PostMapping("/forgot")
     public ResponseEntity<?> forgotPassword(@RequestBody UserDAO userDAO){
         return userService.forgotPassword(userDAO);
@@ -56,9 +64,16 @@ public class UserController {
         return userService.changePassword(userDAO);
     }
 
-    @CrossOrigin(origins="*")
+    @CrossOrigin(origins= "*")
     @PostMapping("/createEmp")
     public ResponseEntity<?> createEmployee(@RequestBody Employee employee){
         return userService.createEmployee(employee);
+    }
+
+    @CrossOrigin(origins= "*")
+    @PostMapping("/updateEmp/{id}")
+    public ResponseEntity<?> updateEmployee(@PathVariable int id, @RequestBody Employee employee){
+        employee.setId(id);
+        return userService.updateEmployee(employee);
     }
 }

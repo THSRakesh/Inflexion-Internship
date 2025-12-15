@@ -54,7 +54,11 @@
                 </f:DynamicPageHeader>
             </f:header>
             <f:content>
-                <Table id="employeeData" items="{oData>/}" sticky="ColumnHeaders">
+                <Table id="employeeData" 
+                       items="{oData>/}" 
+                       sticky="ColumnHeaders"
+                       mode="SingleSelectMaster"
+                       selectionChange=".onRowSelect">
                      <headerToolbar>
                         <Toolbar>
                             <Title text="Employee Details" />

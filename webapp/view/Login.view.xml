@@ -6,7 +6,7 @@
     displayBlock="true">
     <App id="Login">
         <pages>
-            <Page title="Inflexion" class="myBackground">
+            <Page title="Inflexion">
                 <VBox
                     width="100%"
                     height="100%"

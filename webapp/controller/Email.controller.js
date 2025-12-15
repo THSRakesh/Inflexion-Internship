@@ -1,8 +1,8 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast"
-], function(Controller, JSONModel, MessageToast){
+    "sap/m/MessageBox"
+], function(Controller, JSONModel, MessageBox){
     "use strict";
     return Controller.extend("pro_login.controller.Email", {
         onInit(){
@@ -34,7 +34,7 @@ sap.ui.define([
                     that.getView().getModel("forgot").setProperty("/firstName", "");
                 },
                 error:function(err){
-                    MessageToast.show(err.responseText);
+                    MessageBox.error(err.responseText);
                 }
             })
         },

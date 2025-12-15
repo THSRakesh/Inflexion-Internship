@@ -2,8 +2,10 @@ package com.example.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.DAO.ResponseDAO;
 import com.example.DAO.UserDAO;
@@ -17,8 +19,19 @@ import jakarta.persistence.StoredProcedureQuery;
 @Service
 public class UserServiceImpl implements UserService{
 
+    @Autowired
+    private ResponseDAO responseDAO;
+
+    @Autowired
+    private Employee employee;
+
     @PersistenceContext
     EntityManager entityManager;
+
+    UserServiceImpl(Employee employee, ResponseDAO responseDAO) {
+        this.employee = employee;
+        this.responseDAO = responseDAO;
+    }
     
     public ResponseEntity<?> registerUser(UserDAO userDAO){
 
@@ -113,6 +126,14 @@ public class UserServiceImpl implements UserService{
     public List<Employee>getEmpData(){
         StoredProcedureQuery query=entityManager.createStoredProcedureQuery("getEmp","Employee_Data");
         return query.getResultList();
+    }
+
+    public Employee getEmpData(int id){
+        StoredProcedureQuery query=entityManager.createStoredProcedureQuery("getEmpById","Employee_Data");
+        query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
+        query.setParameter(1, id);
+        query.execute();
+        return (Employee)query.getSingleResult();
     }
 
     public ResponseEntity<?> forgotPassword(UserDAO userDAO){
@@ -233,6 +254,58 @@ public class UserServiceImpl implements UserService{
         }
         else{
             return ResponseEntity.status(404).body("Something Error occured");
+        }
+    }
+
+    public ResponseEntity<?> updateEmployee(Employee employee){
+        if(employee.getName()==null || employee.getName().trim().isEmpty()){
+            return ResponseEntity.status(400).body("Employee Name cannot be Empty");
+        }
+        if(employee.getGender() == null || employee.getGender().trim().isEmpty()){
+            return ResponseEntity.status(400).body("Please select a gender");       
+        }
+        if(employee.getDepartment() == null || employee.getDepartment().trim().isEmpty()){
+            return ResponseEntity.status(400).body("Please select a department");
+        }
+        if(employee.getSalary() == null || employee.getSalary() == 0){
+            return ResponseEntity.status(400).body("Enter employee salary");
+        }
+
+        StoredProcedureQuery query=entityManager.createStoredProcedureQuery("updateEmp");
+        query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(4, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(5, Long.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(6, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(7, Integer.class, ParameterMode.OUT);
+
+        employee.setName(employee.getName().trim());
+        employee.setGender(employee.getGender().trim());
+        int department=Integer.parseInt(employee.getDepartment());
+        int reporting_to=Integer.parseInt(employee.getReporting_to());
+
+        query.setParameter(1, employee.getId());
+        query.setParameter(2, employee.getName());
+        query.setParameter(3, employee.getGender());
+        query.setParameter(4, employee.getDepartment());
+        query.setParameter(5, employee.getSalary());
+        query.setParameter(6, employee.getReporting_to());
+
+        query.execute();
+
+        Integer result=(Integer)query.getOutputParameterValue(7);
+        if(result==1){
+            return ResponseEntity.ok("Employee Details Updated Successfully");
+        }
+        else if(result==3){
+            return ResponseEntity.status(404).body("Something went wrong, ID becomes null");
+        }
+        else if(result==2){
+            return ResponseEntity.status(409).body("Given ID does not exists");
+        }
+        else{
+            return ResponseEntity.status(404).body("Something Error Occured");
         }
     }
 }

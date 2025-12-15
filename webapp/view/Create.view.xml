@@ -4,7 +4,7 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:l="sap.ui.layout.form"
     controllerName="pro_login.controller.Create">
-    <Page title="Create Employee" showNavButton="true" navButtonPress=".onBack" class="loginColor">
+    <Page title="{ui>/pageTitle}" showNavButton="true" navButtonPress=".onBack" class="loginColor">
         <VBox
             alignItems="Center"
             width="100%"
@@ -16,22 +16,31 @@
         </VBox>
         <l:SimpleForm
             editable="true"
-            layout="ResponsiveGridLayout"
-            title="Employee Details">
+            layout="ResponsiveGridLayout">
+            <Toolbar >
+                <Title text="{ui>/pageTitle}" class="sapUiMediumMarginBegin"/>
+                <ToolbarSpacer/>
+                <Button
+                    text="Edit"
+                    type="Emphasized"
+                    press=".onEdit"
+                    visible="{ui>/visible}"/>
+            </Toolbar>
+            
             <VBox class="sapUiLargeMargin" >
                 <HBox class="sapUiMediumMarginBottom" justifyContent="Start">        
                     <HBox alignItems="Center">
                         <Label text="Employee Name" required="true" class="labelSize sapUiSmallMarginEnd"/>
-                        <Input value="{oCreate>/name}" placeholder="Employee Name" width="250px" class="sapUiLargeMarginEnd"/>
+                        <Input value="{oCreate>/name}" placeholder="Employee Name" width="250px" class="sapUiLargeMarginEnd" editable="{ui>/editable}"/>
                     </HBox>
                     <HBox alignItems="Center">
                         <Label text="Employee Email" required="true" class="labelSize sapUiSmallMarginEnd"/>
-                        <Input value="{oCreate>/email}" placeholder="Employee Email" width="250px" class="sapUiLargeMarginEnd"/>
+                        <Input value="{oCreate>/email}" placeholder="Employee Email" width="250px" class="sapUiLargeMarginEnd" editable="{ui>/isCreate}"/>
                     </HBox>
                     <VBox>
                         <Label text="Gender" required="true" class="labelSize sapUiLargeMarginBegin"/>
                         <HBox>
-                            <RadioButtonGroup columns="2" selectedIndex="{oCreate>/gender}">
+                            <RadioButtonGroup columns="2" selectedIndex="{oCreate>/gender}" editable="{ui>/editable}">
                                 <RadioButton text="Male" class="sapUiSmallMarginEnd"/>
                                 <RadioButton text="Female"/>
                             </RadioButtonGroup>
@@ -42,13 +51,13 @@
                     <HBox alignItems="Center">
                         <Label text="Department" required="true" class="labelSize sapUiSmallMarginEnd"/>
                         <ComboBox selectedKey="{oCreate>/department}" placeholder="select Department" width="250px" class="sapUiLargeMarginEnd"
-                            items="{oDep>/departments}" change="onDepChange" showClearIcon="true" >
+                            items="{oDep>/departments}" change="onDepChange" showClearIcon="true" editable="{ui>/editable}">
                             <core:Item key="{oDep>key}" text="{oDep>text}"/>
                         </ComboBox>
                     </HBox>
                     <HBox alignItems="Center">
                         <Label text="Salary" required="true" class="labelSize sapUiSmallMarginEnd"/>
-                        <Input value="{oCreate>/salary}" placeholder="Enter Salary" width="250px" class="sapUiLargeMarginEnd" liveChange=".onSalaryLiveChange" change=".onSalaryChange"/>
+                        <Input value="{oCreate>/salary}" placeholder="Enter Salary" width="250px" class="sapUiLargeMarginEnd" liveChange=".onSalaryLiveChange" change=".onSalaryChange" editable="{ui>/editable}"/>
                     </HBox>
                     <HBox alignItems="Center">
                         <Label text="Reporting to" class="labelSize sapUiSmallMarginEnd"/>
@@ -56,8 +65,9 @@
                     </HBox>
                 </HBox>
                  <HBox justifyContent="Center">
-                    <Button text="Save" press=".onSave" type="Emphasized" class="sapUiSmallMarginEnd"/>
-                    <Button text="Cancel" press=".onCancel"/>
+                    <Button text="{= ${ui>/isCreate}? 'Save' : 'Update'}" 
+                            press=".onSave" type="Emphasized" class="sapUiSmallMarginEnd" visible="{ui>/editable}"/>
+                    <Button text="Cancel" press=".onCancel" visible="{ui>/editable}"/>
                  </HBox>
             </VBox>
            
