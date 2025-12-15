@@ -2,10 +2,8 @@ package com.example.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.DAO.ResponseDAO;
 import com.example.DAO.UserDAO;
@@ -19,19 +17,19 @@ import jakarta.persistence.StoredProcedureQuery;
 @Service
 public class UserServiceImpl implements UserService{
 
-    @Autowired
-    private ResponseDAO responseDAO;
+    // @Autowired
+    // private ResponseDAO responseDAO;
 
-    @Autowired
-    private Employee employee;
+    // @Autowired
+    // private Employee employee;
 
     @PersistenceContext
     EntityManager entityManager;
 
-    UserServiceImpl(Employee employee, ResponseDAO responseDAO) {
-        this.employee = employee;
-        this.responseDAO = responseDAO;
-    }
+    // UserServiceImpl(Employee employee, ResponseDAO responseDAO) {
+    //     this.employee = employee;
+    //     this.responseDAO = responseDAO;
+    // }
     
     public ResponseEntity<?> registerUser(UserDAO userDAO){
 
@@ -288,9 +286,9 @@ public class UserServiceImpl implements UserService{
         query.setParameter(1, employee.getId());
         query.setParameter(2, employee.getName());
         query.setParameter(3, employee.getGender());
-        query.setParameter(4, employee.getDepartment());
+        query.setParameter(4, department);
         query.setParameter(5, employee.getSalary());
-        query.setParameter(6, employee.getReporting_to());
+        query.setParameter(6,reporting_to);
 
         query.execute();
 
