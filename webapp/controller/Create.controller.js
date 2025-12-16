@@ -187,8 +187,8 @@ sap.ui.define([
                         reporting_to:oData.reporting_to
                     }),
                     success:function(response){
-                        // MessageToast.show(response);
-                        MessageBox.success(response, {
+                        var id=response;
+                        MessageBox.success("Employee Created Successfully", {
                             onClose:function(){
                                 that.getView().getModel("oCreate").setData({
                                     name:"",
@@ -199,7 +199,7 @@ sap.ui.define([
                                     reporting_to:"",
                                     reportingto_text:""
                                 });
-                                that.oRouter.navTo("DisplayEmp");
+                                that.oRouter.navTo("Details", {id:id});
                             }
                         });
                     },

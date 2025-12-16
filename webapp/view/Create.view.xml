@@ -4,7 +4,7 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:l="sap.ui.layout.form"
     controllerName="pro_login.controller.Create">
-    <Page title="{ui>/pageTitle}" showNavButton="true" navButtonPress=".onBack" class="loginColor">
+    <Page title="{ui>/pageTitle}" showNavButton="{= ${ui>/isCreate} || ${ui>/visible}}" navButtonPress=".onBack" class="loginColor">
         <VBox
             alignItems="Center"
             width="100%"

@@ -88,7 +88,6 @@ sap.ui.define([
         onRowSelect(oEvent){
             var oItem=oEvent.getParameter("listItem");
             var oData=oItem.getBindingContext("oData").getObject();
-            MessageToast.show(oData.id);
             var id=oData.id;
             this.oRouter.navTo("Details",{id:id});
         }

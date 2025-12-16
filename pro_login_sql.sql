@@ -169,6 +169,7 @@ create procedure createEmp(in u_name varchar(50),
                            in u_department int,
                            in u_salary bigint,
                            in u_reporting_to int,
+                           out u_id int,
                            out u_result int)
 begin
 	if exists(select 1 from emp where email=u_email) then
@@ -176,6 +177,7 @@ begin
 	else
 		insert into emp(name, email, gender, department, salary, reporting_to)
         values (u_name, u_email, u_gender, u_department, u_salary, u_reporting_to);
+        set u_id=last_insert_id();
         set u_result=1;
 	end if;
 end //

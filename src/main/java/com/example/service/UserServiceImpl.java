@@ -214,6 +214,7 @@ public class UserServiceImpl implements UserService{
         query.registerStoredProcedureParameter(5, Long.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(6, Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(7, Integer.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter(8, Integer.class, ParameterMode.OUT);
 
         employee.setName(employee.getName().trim());
         employee.setEmail(employee.getEmail().trim());
@@ -230,14 +231,16 @@ public class UserServiceImpl implements UserService{
 
         query.execute();
 
-        Integer result=(Integer)query.getOutputParameterValue(7);
+        Integer generatedId=(Integer)query.getOutputParameterValue(7);
+
+        Integer result=(Integer)query.getOutputParameterValue(8);
         if(result==2){
             System.out.println("Email already exists");
             return ResponseEntity.status(409).body("Entered email is already given to other Employee");
         }
         else if(result==1){
             System.out.println("Employee created successfully");
-            return ResponseEntity.ok("Employee Created Successfully");
+            return ResponseEntity.ok(generatedId);
         }
         else{
             return ResponseEntity.status(404).body("Something Error occured");
