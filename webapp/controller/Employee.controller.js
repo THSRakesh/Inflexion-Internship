@@ -10,14 +10,7 @@ sap.ui.define([
     return Controller.extend("pro_login.controller.Employee", {
         onInit(){
             this.oRouter=this.getOwnerComponent().getRouter();
-            var that=this;
-
-            var oModel=new JSONModel({
-                name:"",
-                dep:"",
-                loc:""
-            });
-            that.getView().setModel(oModel, "oFilter");
+            this.oRouter.getRoute("DisplayEmp").attachPatternMatched(this._onRouteMatched, this);
 
             var oDepModel=new JSONModel({
                 departments:[
@@ -33,8 +26,19 @@ sap.ui.define([
                 ]
             });
             this.getView().setModel(oDepModel, "oDep");
-
-            $.ajax({
+        },
+        _onRouteMatched(){
+            var oModel=new JSONModel({
+                name:"",
+                dep:"",
+                loc:""
+            });
+            this.getView().setModel(oModel, "oFilter");
+            this._loadEmployeeData();
+        },
+        _loadEmployeeData(){
+            var that= this;
+             $.ajax({
                 url:"http://localhost:8080/employee",
                 method:"GET",
                 dataType:"json",
