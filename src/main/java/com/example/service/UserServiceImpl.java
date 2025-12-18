@@ -245,16 +245,17 @@ public class UserServiceImpl implements UserService{
             return ResponseEntity.status(400).body("Enter employee salary");
         }
         
-        StoredProcedureQuery query=entityManager.createStoredProcedureQuery("createEmp");
-        query.registerStoredProcedureParameter(1, String.class, ParameterMode.IN);
+        StoredProcedureQuery query=entityManager.createStoredProcedureQuery("ADD_EDIT_EMPLOYEE");
+        query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(4, Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(5, Long.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(6, Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(7, String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(8, Integer.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter(4, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(5, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(6, Long.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(7, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(8, String.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(9, Integer.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter(10, Integer.class, ParameterMode.OUT);
 
         employeeDAO.setName(employeeDAO.getName().trim());
         employeeDAO.setEmail(employeeDAO.getEmail().trim());
@@ -272,18 +273,18 @@ public class UserServiceImpl implements UserService{
         }
         String projectsJson=objectMapper.writeValueAsString(projectIds);
 
-        query.setParameter(1, employeeDAO.getName());
-        query.setParameter(2, employeeDAO.getEmail());
-        query.setParameter(3, employeeDAO.getGender());
-        query.setParameter(4, department);
-        query.setParameter(5, employeeDAO.getSalary());
-        query.setParameter(6, reporting_to);
-        query.setParameter(7, projectsJson);
+        query.setParameter(1, employeeDAO.getId());
+        query.setParameter(2, employeeDAO.getName());
+        query.setParameter(3, employeeDAO.getEmail());
+        query.setParameter(4, employeeDAO.getGender());
+        query.setParameter(5, department);
+        query.setParameter(6, employeeDAO.getSalary());
+        query.setParameter(7, reporting_to);
+        query.setParameter(8, projectsJson);
         query.execute();
 
-        Integer generatedId=(Integer)query.getOutputParameterValue(8);
-
-        Integer result=(Integer)query.getOutputParameterValue(9);
+        Integer generatedId=(Integer)query.getOutputParameterValue(9);
+        Integer result=(Integer)query.getOutputParameterValue(10);
         if(result==2){
             System.out.println("Email already exists");
             return ResponseEntity.status(409).body("Entered email is already given to other Employee");
@@ -311,15 +312,17 @@ public class UserServiceImpl implements UserService{
             return ResponseEntity.status(400).body("Enter employee salary");
         }
 
-        StoredProcedureQuery query=entityManager.createStoredProcedureQuery("updateEmp");
+        StoredProcedureQuery query=entityManager.createStoredProcedureQuery("ADD_EDIT_EMPLOYEE");
         query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(2, String.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(3, String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(4, Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(5, Long.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(6, Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(7, String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(8, Integer.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter(4, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(5, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(6, Long.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(7, Integer.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(8, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(9, Integer.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter(10, Integer.class, ParameterMode.OUT);
 
         employeeDAO.setName(employeeDAO.getName().trim());
         employeeDAO.setGender(employeeDAO.getGender().trim());
@@ -339,18 +342,18 @@ public class UserServiceImpl implements UserService{
         query.setParameter(1, employeeDAO.getId());
         query.setParameter(2, employeeDAO.getName());
         query.setParameter(3, employeeDAO.getGender());
-        query.setParameter(4, department);
-        query.setParameter(5, employeeDAO.getSalary());
-        query.setParameter(6,reporting_to);
-        query.setParameter(7, projectsJson);
+        query.setParameter(4, employeeDAO.getGender());
+        query.setParameter(5, department);
+        query.setParameter(6, employeeDAO.getSalary());
+        query.setParameter(7,reporting_to);
+        query.setParameter(8, projectsJson);
         query.execute();
 
-        Integer result=(Integer)query.getOutputParameterValue(8);
+        Integer updatedId=(Integer)query.getOutputParameterValue(9);
+        Integer result=(Integer)query.getOutputParameterValue(10);
         if(result==1){
-            return ResponseEntity.ok("Employee Details Updated Successfully");
-        }
-        else if(result==3){
-            return ResponseEntity.status(404).body("Something went wrong, ID becomes null");
+            System.out.println("Employee Details Updated Successfully");
+            return ResponseEntity.ok(updatedId);
         }
         else if(result==2){
             return ResponseEntity.status(409).body("Given ID does not exists");

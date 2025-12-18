@@ -343,8 +343,8 @@ sap.ui.define([
                         projects:aProjectIds
                     }),
                     success:function(response){
-                        // MessageToast.show(response);
-                        MessageBox.success(response, {
+                       var id=response;
+                        MessageBox.success("Employee Created Successfully", {
                             onClose:function(){
                                 that.getView().getModel("oCreate").setData({
                                     name:"",
@@ -356,7 +356,7 @@ sap.ui.define([
                                     reportingto_text:"",
                                     projects:[]
                                 });
-                                that.oRouter.navTo("DisplayEmp");
+                                that.oRouter.navTo("Details", {id:id});
                             }
                         });
                     },
