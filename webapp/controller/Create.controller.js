@@ -27,7 +27,8 @@ sap.ui.define([
                 department:"",
                 salary:0,
                 reporting_to:"",
-                reportingto_text:""
+                reportingto_text:"",
+                projects:[]
             });
             this.getView().setModel(oModel, "oCreate");
 
@@ -78,7 +79,33 @@ sap.ui.define([
                     key: null,
                     text: null
                 }
-            }
+            };
+
+            var proModel=new JSONModel({
+                projects:[
+                    {   
+                        key:"101", text:"Employee Management System", 
+                        desc:"A centralized application to manage employee records, roles, and reporting hierarchy. Improves HR efficiency and ensures accurate employee data.", 
+                        type:"Technical"
+                    },
+                    {
+                        key:"102", text:"Salary Calculation System", 
+                        desc:"Calculates employee salaries based on role and attendance. Reduces manual salary calculation errors.", 
+                        type:"Technical"
+                    },
+                    {
+                        key:"103", text:"Leave Request Management", 
+                        desc:"Allows employees to apply for leave online. Simplifies leave approval and tracking.", 
+                        type:"Functional"
+                    },
+                    {
+                        key:"104", text:"Project Assignment Tracker", 
+                        desc:"Tracks which employees are working on which projects. Makes project allocation simple and clear.", 
+                        type:"Functional"
+                    }
+                ]
+            });
+            this.getView().setModel(proModel, "oPro");
         },
         _onEmpDetails(oEvent){
             var id=oEvent.getParameter("arguments").id;
@@ -120,7 +147,20 @@ sap.ui.define([
                     var num=parseFloat(oData.salary);
                     oData.salary= num.toFixed(2)+" INR";
 
-                    that.getView().getModel("oCreate").setData(oData);
+                    var oModel=that.getView().getModel("oCreate")
+                    oModel.setData(oData);
+
+                    var aProjects=that.getView().getModel("oPro").getProperty("/projects");
+                    if(oData.projects){
+                        oData.projects.forEach((p,index)=>{
+                            var sKey=String(p.projectId);
+                            var oProject=aProjects.find(p=>p.key===sKey);
+                            if(oProject){
+                                oModel.setProperty("/projects/"+index+"/projectDesc", oProject.desc);
+                                oModel.setProperty("/projects/"+index+"/projectType", oProject.type);
+                            }
+                        });
+                    }
                 },
                 error:function(err){
                     MessageBox.error("Employee not found");
@@ -163,6 +203,75 @@ sap.ui.define([
             oModel.setProperty("/reporting_to", map.key);
             oModel.setProperty("/reportingto_text", map.text);
         },
+        onProChange(oEvent){
+            var oCombo=oEvent.getSource();
+            var sKey=oCombo.getSelectedKey();
+            var oCtx=oCombo.getBindingContext("oCreate");
+            var sPath=oCtx.getPath();
+            var oModel=oCtx.getModel();
+            if(!sKey){
+                oModel.setProperty(sPath + "/projectId", "");
+                oModel.setProperty(sPath + "/projectName", "");
+                oModel.setProperty(sPath + "/projectDesc", "");
+                oModel.setProperty(sPath + "/projectType", "");
+                return;
+            }
+            var aProjects=this.getView().getModel("oPro").getProperty("/projects");
+
+            var selectedProjects=oModel.getProperty("/projects");
+            var currentIndex=parseInt(sPath.split("/").pop());
+            var duplicate=selectedProjects.some((p, index)=>{ //it is to remove the duplicate projects when user tries to enter
+                return index !=currentIndex && String(p.projectId) ===sKey;
+            });
+            if(duplicate){
+                MessageBox.warning("This Project is already in the List");
+                selectedProjects.splice(currentIndex, 1); //It is removing the selected project comboBox
+                oModel.setProperty("/projects",selectedProjects)
+                return;
+            }
+
+            var oProject=aProjects.find(p=>p.key===sKey);
+            oModel.setProperty(sPath+"/projectName", oProject.text);
+            oModel.setProperty(sPath+"/projectDesc", oProject.desc);
+            oModel.setProperty(sPath+"/projectType", oProject.type);
+        },
+        onAddRow(){
+            var oModel=this.getView().getModel("oCreate");
+            var aProjects=oModel.getProperty("/projects");
+            if (!aProjects) {
+                aProjects = [];
+            }
+            aProjects.push({
+                projectId:"",
+                projectName:"",
+                projectDesc:"",
+                projectType:""
+            });
+            oModel.setProperty("/projects", aProjects);
+        },
+        onDelRow(){
+            var oTable=this.byId("projectDetails");
+            var oModel=this.getView().getModel("oCreate");
+            var aProjects=oModel.getProperty("/projects");
+            var aSelectedItem=oTable.getSelectedItems();
+            if(!aSelectedItem.length){
+                MessageBox.warning("Please select at least one row to remove");
+                return;
+            }
+            aSelectedItem
+                .map(oItem=>{
+                    return oItem.getBindingContext("oCreate").getPath();
+                })
+                .sort((a,b)=>{
+                    return parseInt(b.split("/").pop())-parseInt(a.split("/").pop());
+                })
+                .forEach(sPath=>{
+                    var index=parseInt(sPath.split("/").pop());
+                    aProjects.splice(index,1);
+                });
+            oModel.setProperty("/projects", aProjects);
+            oTable.removeSelections(true);
+        },
         onSave(){
             var oData=this.getView().getModel("oCreate").getData();
             var sGender=oData.gender===0 ? "M" : (oData.gender===1 ? "F" : " ");
@@ -171,6 +280,16 @@ sap.ui.define([
             sSalary=sSalary.replace("INR", "").trim();
             sSalary=parseInt(sSalary);
             var that=this;
+
+            var aProjectIds=oData.projects
+                .filter(aProject=>{
+                    return aProject.projectId;
+                })
+                .map(aProject=>{
+                    return{ 
+                        projectId:Number(aProject.projectId)
+                    };
+                });
 
             var ui=this.getView().getModel("ui").getData();
             if(ui.isCreate){
@@ -184,7 +303,8 @@ sap.ui.define([
                         gender:sGender,
                         department:oData.department,
                         salary:sSalary,
-                        reporting_to:oData.reporting_to
+                        reporting_to:oData.reporting_to,
+                        projects:aProjectIds
                     }),
                     success:function(response){
                         var id=response;
@@ -197,7 +317,8 @@ sap.ui.define([
                                     department:"",
                                     salary:0,
                                     reporting_to:"",
-                                    reportingto_text:""
+                                    reportingto_text:"",
+                                    projects:[]
                                 });
                                 that.oRouter.navTo("Details", {id:id});
                             }
@@ -218,7 +339,8 @@ sap.ui.define([
                         gender:sGender,
                         department:oData.department,
                         salary:sSalary,
-                        reporting_to:oData.reporting_to
+                        reporting_to:oData.reporting_to,
+                        projects:aProjectIds
                     }),
                     success:function(response){
                         // MessageToast.show(response);
@@ -231,7 +353,8 @@ sap.ui.define([
                                     department:"",
                                     salary:0,
                                     reporting_to:"",
-                                    reportingto_text:""
+                                    reportingto_text:"",
+                                    projects:[]
                                 });
                                 that.oRouter.navTo("DisplayEmp");
                             }
@@ -257,7 +380,8 @@ sap.ui.define([
                     department:"",
                     salary:0,
                     reporting_to:"",
-                    reportingto_text:""
+                    reportingto_text:"",
+                    projects:[]
                 });
             }
             else if(oData.editable && !(oData.isCreate)){
@@ -273,7 +397,8 @@ sap.ui.define([
                 department:"",
                 salary:0,
                 reporting_to:"",
-                reportingto_text:""
+                reportingto_text:"",
+                projects:[]
             });
             this.oRouter.navTo("DisplayEmp");
         }

@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.DAO.EmployeeDAO;
 import com.example.DAO.ResponseDAO;
 import com.example.DAO.UserDAO;
-import com.example.entity.Employee;
+// import com.example.entity.Employee;
 import com.example.service.UserService;
 
 @RestController
@@ -41,13 +42,13 @@ public class UserController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/employee")
-    public List<Employee>getEmpData(){
+    public List<EmployeeDAO>getEmpData(){
         return userService.getEmpData();
     }
 
     @CrossOrigin(origins= "*")
     @GetMapping("/employee/{id}")
-    public Employee getEmpData(@PathVariable int id){
+    public EmployeeDAO getEmpData(@PathVariable int id){
         return userService.getEmpData(id);
     }
 
@@ -65,14 +66,14 @@ public class UserController {
 
     @CrossOrigin(origins= "*")
     @PostMapping("/createEmp")
-    public ResponseEntity<?> createEmployee(@RequestBody Employee employee){
-        return userService.createEmployee(employee);
+    public ResponseEntity<?> createEmployee(@RequestBody EmployeeDAO employeeDAO){
+        return userService.createEmployee(employeeDAO);
     }
 
     @CrossOrigin(origins= "*")
     @PostMapping("/updateEmp/{id}")
-    public ResponseEntity<?> updateEmployee(@PathVariable int id, @RequestBody Employee employee){
-        employee.setId(id);
-        return userService.updateEmployee(employee);
+    public ResponseEntity<?> updateEmployee(@PathVariable int id, @RequestBody EmployeeDAO employeeDAO){
+        employeeDAO.setId(id);
+        return userService.updateEmployee(employeeDAO);
     }
 }

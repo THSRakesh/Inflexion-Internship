@@ -18,7 +18,7 @@
             editable="true"
             layout="ResponsiveGridLayout">
             <Toolbar >
-                <Title text="{ui>/pageTitle}" class="sapUiMediumMarginBegin"/>
+                <Title text="{ui>/pageTitle}"/>
                 <ToolbarSpacer/>
                 <Button
                     text="Edit"
@@ -27,7 +27,7 @@
                     visible="{ui>/visible}"/>
             </Toolbar>
             
-            <VBox class="sapUiLargeMargin" >
+            <VBox class="sapUiSmallMarginTop" >
                 <HBox class="sapUiMediumMarginBottom" justifyContent="Start">        
                     <HBox alignItems="Center">
                         <Label text="Employee Name" required="true" class="labelSize sapUiSmallMarginEnd"/>
@@ -64,13 +64,51 @@
                         <Input value="{oCreate>/reportingto_text}" editable="false" width="250px" class="sapUiLargeMarginEnd"/>
                     </HBox>
                 </HBox>
-                 <HBox justifyContent="Center">
-                    <Button text="{= ${ui>/isCreate}? 'Save' : 'Update'}" 
-                            press=".onSave" type="Emphasized" class="sapUiSmallMarginEnd" visible="{ui>/editable}"/>
-                    <Button text="Cancel" press=".onCancel" visible="{ui>/editable}"/>
-                 </HBox>
             </VBox>
-           
         </l:SimpleForm>
+       
+        <Table id="projectDetails"
+               items="{oCreate>/projects}"
+               mode="MultiSelect">
+            <headerToolbar>
+                <Toolbar>
+                    <Title text="Project Details"/>
+                </Toolbar>
+            </headerToolbar>
+            <infoToolbar>
+                <Toolbar>
+                    <ToolbarSpacer/>
+                    <Button text="Add" press=".onAddRow" type="Emphasized" visible="{ui>/editable}"/>
+                    <Button text="Remove" press=".onDelRow" type="Emphasized" class="sapUiSmallMarginBegin" visible="{ui>/editable}"/>
+                </Toolbar>
+            </infoToolbar>
+            <columns>
+                <Column>
+                    <Text text="Project Name"/>
+                </Column>
+                <Column>
+                    <Text text="Project Description"/>
+                </Column>
+                <Column>
+                    <Text text="Project type"/>
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <ComboBox items="{oPro>/projects}" selectedKey="{oCreate>projectId}" width="300px" change=".onProChange" showClearIcon="true" editable="{ui>/editable}">
+                            <core:Item key="{oPro>key}" text="{oPro>text}"/>
+                        </ComboBox>
+                        <Text text="{oCreate>projectDesc}" wrapping="true"/>
+                        <Text text="{oCreate>projectType}"/>
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+        <HBox justifyContent="Center">
+            <Button text="{= ${ui>/isCreate}? 'Save' : 'Update'}" 
+                    press=".onSave" type="Emphasized" class="sapUiSmallMarginEnd" visible="{ui>/editable}"/>
+            <Button text="Cancel" press=".onCancel" visible="{ui>/editable}"/>
+        </HBox>
     </Page>
 </mvc:View>

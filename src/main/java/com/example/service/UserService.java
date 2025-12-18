@@ -4,16 +4,17 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.example.DAO.EmployeeDAO;
 import com.example.DAO.UserDAO;
-import com.example.entity.Employee;
+// import com.example.entity.Employee;
 
 public interface UserService {
     ResponseEntity<?> registerUser(UserDAO userDAO);
     ResponseEntity<?> loginUser(UserDAO userDAO);
-    List<Employee>getEmpData();
-    Employee getEmpData(int id);
+    List<EmployeeDAO>getEmpData();
+    EmployeeDAO getEmpData(int id);
     ResponseEntity<?> forgotPassword(UserDAO userDAO);
     ResponseEntity<?> changePassword(UserDAO userDAO);
-    ResponseEntity<?> createEmployee(Employee employee);
-    ResponseEntity<?> updateEmployee(Employee employee);
+    ResponseEntity<?> createEmployee(EmployeeDAO employeeDAO);
+    ResponseEntity<?> updateEmployee(EmployeeDAO employeeDAO);
 }

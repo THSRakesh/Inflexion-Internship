@@ -1,24 +1,34 @@
 package com.example.service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.DAO.EmployeeDAO;
+import com.example.DAO.EmployeeRowDAo;
 import com.example.DAO.ResponseDAO;
 import com.example.DAO.UserDAO;
-import com.example.entity.Employee;
+// import com.example.entity.Employee;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ParameterMode;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.StoredProcedureQuery;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class UserServiceImpl implements UserService{
 
     @PersistenceContext
     EntityManager entityManager;
+
+    @Autowired
+    ObjectMapper objectMapper;
     
     public ResponseEntity<?> registerUser(UserDAO userDAO){
 
@@ -110,17 +120,46 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    public List<Employee>getEmpData(){
+    public List<EmployeeDAO>getEmpData(){
         StoredProcedureQuery query=entityManager.createStoredProcedureQuery("getEmp","Employee_Data");
-        return query.getResultList();
+        List<EmployeeRowDAo> rows=query.getResultList();         
+        return groupEmployees(rows);
+    }
+    public List<EmployeeDAO> groupEmployees(List<EmployeeRowDAo> rows){
+        Map<Integer, EmployeeDAO> map=new LinkedHashMap<>();
+
+        for(EmployeeRowDAo row:rows){
+            EmployeeDAO dao=map.get(row.getId());
+            if(dao == null){
+                dao=new EmployeeDAO();
+                dao.setId(row.getId());
+                dao.setName(row.getName());
+                dao.setEmail(row.getEmail());
+                dao.setGender(row.getGender());
+                dao.setDepartment(row.getDepartment());
+                dao.setLocation(row.getLocation());
+                dao.setSalary(row.getSalary());
+                dao.setReporting_to(row.getReporting_to());
+                dao.setReportingto_text(row.getReportingto_text());
+                map.put(row.getId(),dao);
+            }
+            if(row.getProject_id() != null){
+                Map<String, Object>project=new LinkedHashMap<>();
+                project.put("projectId", row.getProject_id());
+                dao.getProjects().add(project);
+            }
+        }
+        return new ArrayList<>(map.values());
     }
 
-    public Employee getEmpData(int id){
+    public EmployeeDAO getEmpData(int id){
         StoredProcedureQuery query=entityManager.createStoredProcedureQuery("getEmpById","Employee_Data");
         query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
         query.setParameter(1, id);
         query.execute();
-        return (Employee)query.getSingleResult();
+        List<EmployeeRowDAo>rows= query.getResultList();
+        List<EmployeeDAO>list= groupEmployees(rows);
+        return list.isEmpty()? null: list.get(0);
     }
 
     public ResponseEntity<?> forgotPassword(UserDAO userDAO){
@@ -189,20 +228,20 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    public ResponseEntity<?> createEmployee(Employee employee){
-        if(employee.getName() == null || employee.getName().trim().isEmpty()){
+    public ResponseEntity<?> createEmployee(EmployeeDAO employeeDAO){
+        if(employeeDAO.getName() == null || employeeDAO.getName().trim().isEmpty()){
             return ResponseEntity.status(400).body("Employee Name cannot be Empty");
         }
-        if(employee.getEmail() == null || employee.getEmail().trim().isEmpty()){
+        if(employeeDAO.getEmail() == null || employeeDAO.getEmail().trim().isEmpty()){
             return ResponseEntity.status(400).body("Employee Email cannot be Empty");
         }
-        if(employee.getGender() == null || employee.getGender().trim().isEmpty()){
+        if(employeeDAO.getGender() == null || employeeDAO.getGender().trim().isEmpty()){
             return ResponseEntity.status(400).body("Please select a gender");
         }
-        if(employee.getDepartment() == null || employee.getDepartment().trim().isEmpty()){
+        if(employeeDAO.getDepartment() == null || employeeDAO.getDepartment().trim().isEmpty()){
             return ResponseEntity.status(400).body("Please select a department");
         }
-        if(employee.getSalary() == null || employee.getSalary() == 0){
+        if(employeeDAO.getSalary() == null || employeeDAO.getSalary() == 0){
             return ResponseEntity.status(400).body("Enter employee salary");
         }
         
@@ -213,27 +252,38 @@ public class UserServiceImpl implements UserService{
         query.registerStoredProcedureParameter(4, Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(5, Long.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(6, Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(7, Integer.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter(7, String.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(8, Integer.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter(9, Integer.class, ParameterMode.OUT);
 
-        employee.setName(employee.getName().trim());
-        employee.setEmail(employee.getEmail().trim());
-        employee.setGender(employee.getGender().trim());
-        int department=Integer.parseInt(employee.getDepartment());
-        int reporting_to=Integer.parseInt(employee.getReporting_to());
+        employeeDAO.setName(employeeDAO.getName().trim());
+        employeeDAO.setEmail(employeeDAO.getEmail().trim());
+        employeeDAO.setGender(employeeDAO.getGender().trim());
+        int department=Integer.parseInt(employeeDAO.getDepartment());
+        Integer reporting_to=null;
+        String rt=employeeDAO.getReporting_to();
+         if(rt!=null && !rt.trim().isEmpty()){
+            reporting_to=Integer.parseInt(employeeDAO.getReporting_to());
+        }
 
-        query.setParameter(1, employee.getName());
-        query.setParameter(2, employee.getEmail());
-        query.setParameter(3, employee.getGender());
+        List<String>projectIds=new ArrayList<>();
+        for(Map<String, Object>projects:employeeDAO.getProjects()){
+            projectIds.add(projects.get("projectId").toString());
+        }
+        String projectsJson=objectMapper.writeValueAsString(projectIds);
+
+        query.setParameter(1, employeeDAO.getName());
+        query.setParameter(2, employeeDAO.getEmail());
+        query.setParameter(3, employeeDAO.getGender());
         query.setParameter(4, department);
-        query.setParameter(5, employee.getSalary());
+        query.setParameter(5, employeeDAO.getSalary());
         query.setParameter(6, reporting_to);
-
+        query.setParameter(7, projectsJson);
         query.execute();
 
-        Integer generatedId=(Integer)query.getOutputParameterValue(7);
+        Integer generatedId=(Integer)query.getOutputParameterValue(8);
 
-        Integer result=(Integer)query.getOutputParameterValue(8);
+        Integer result=(Integer)query.getOutputParameterValue(9);
         if(result==2){
             System.out.println("Email already exists");
             return ResponseEntity.status(409).body("Entered email is already given to other Employee");
@@ -247,17 +297,17 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    public ResponseEntity<?> updateEmployee(Employee employee){
-        if(employee.getName()==null || employee.getName().trim().isEmpty()){
+    public ResponseEntity<?> updateEmployee(EmployeeDAO employeeDAO){
+        if(employeeDAO.getName()==null || employeeDAO.getName().trim().isEmpty()){
             return ResponseEntity.status(400).body("Employee Name cannot be Empty");
         }
-        if(employee.getGender() == null || employee.getGender().trim().isEmpty()){
+        if(employeeDAO.getGender() == null || employeeDAO.getGender().trim().isEmpty()){
             return ResponseEntity.status(400).body("Please select a gender");       
         }
-        if(employee.getDepartment() == null || employee.getDepartment().trim().isEmpty()){
+        if(employeeDAO.getDepartment() == null || employeeDAO.getDepartment().trim().isEmpty()){
             return ResponseEntity.status(400).body("Please select a department");
         }
-        if(employee.getSalary() == null || employee.getSalary() == 0){
+        if(employeeDAO.getSalary() == null || employeeDAO.getSalary() == 0){
             return ResponseEntity.status(400).body("Enter employee salary");
         }
 
@@ -268,23 +318,34 @@ public class UserServiceImpl implements UserService{
         query.registerStoredProcedureParameter(4, Integer.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(5, Long.class, ParameterMode.IN);
         query.registerStoredProcedureParameter(6, Integer.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter(7, Integer.class, ParameterMode.OUT);
+        query.registerStoredProcedureParameter(7, String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter(8, Integer.class, ParameterMode.OUT);
 
-        employee.setName(employee.getName().trim());
-        employee.setGender(employee.getGender().trim());
-        int department=Integer.parseInt(employee.getDepartment());
-        int reporting_to=Integer.parseInt(employee.getReporting_to());
+        employeeDAO.setName(employeeDAO.getName().trim());
+        employeeDAO.setGender(employeeDAO.getGender().trim());
+        int department=Integer.parseInt(employeeDAO.getDepartment());
+        Integer reporting_to=null;
+        String rt = employeeDAO.getReporting_to();
+        if(rt!=null && !rt.trim().isEmpty()){
+            reporting_to=Integer.parseInt(rt.trim());
+        }
 
-        query.setParameter(1, employee.getId());
-        query.setParameter(2, employee.getName());
-        query.setParameter(3, employee.getGender());
+        List<String>projectIds=new ArrayList<>();
+        for(Map<String, Object>projects:employeeDAO.getProjects()){
+            projectIds.add(projects.get("projectId").toString());
+        }
+        String projectsJson=objectMapper.writeValueAsString(projectIds);
+
+        query.setParameter(1, employeeDAO.getId());
+        query.setParameter(2, employeeDAO.getName());
+        query.setParameter(3, employeeDAO.getGender());
         query.setParameter(4, department);
-        query.setParameter(5, employee.getSalary());
+        query.setParameter(5, employeeDAO.getSalary());
         query.setParameter(6,reporting_to);
-
+        query.setParameter(7, projectsJson);
         query.execute();
 
-        Integer result=(Integer)query.getOutputParameterValue(7);
+        Integer result=(Integer)query.getOutputParameterValue(8);
         if(result==1){
             return ResponseEntity.ok("Employee Details Updated Successfully");
         }
