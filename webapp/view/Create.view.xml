@@ -4,11 +4,10 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:l="sap.ui.layout.form"
     controllerName="pro_login.controller.Create">
-    <Page title="{ui>/pageTitle}" showNavButton="{= ${ui>/isCreate} || ${ui>/visible}}" navButtonPress=".onBack" class="loginColor">
+    <Page title="{ui>/pageTitle}" showNavButton="{= ${ui>/isCreate} || ${ui>/visible}}" navButtonPress=".onBack">
         <VBox
             alignItems="Center"
-            width="100%"
-            class="loginColor">
+            width="100%">
             <HBox alignItems="Center">
                 <Image src="img/inflexion_logo.png" width="60%" height="30%"/>
                 <Title text="Inflexion" class="title"/>
@@ -69,7 +68,7 @@
        
         <Table id="projectDetails"
                items="{oCreate>/projects}"
-               mode="MultiSelect">
+               mode="{= ${ui>/editable}? 'MultiSelect' : 'None'}">
             <headerToolbar>
                 <Toolbar>
                     <Title text="Project Details"/>

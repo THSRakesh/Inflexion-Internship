@@ -10,8 +10,7 @@
         </headerContent>
         <VBox
             alignItems="Center"
-            width="100%"
-            class="loginColor">
+            width="100%">
             <HBox alignItems="Center">
                 <Image src="img/inflexion_logo.png" width="60%" height="30%"/>
                 <Title text="Inflexion" class="title"/>

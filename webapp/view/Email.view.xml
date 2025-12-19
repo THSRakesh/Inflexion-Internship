@@ -15,7 +15,7 @@
             justifyContent="Center"
             width="60%"
             height="70%"
-            class="sapUiLargeMargin loginColor">
+            class="sapUiLargeMargin">
 
             <HBox alignItems="Center">
                 <Image src="img/inflexion_logo.png" width="60%" height="30%"/>
