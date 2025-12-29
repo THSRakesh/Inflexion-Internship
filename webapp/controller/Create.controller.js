@@ -344,7 +344,7 @@ sap.ui.define([
                     }),
                     success:function(response){
                        var id=response;
-                        MessageBox.success("Employee Created Successfully", {
+                        MessageBox.success("Employee Updated Successfully", {
                             onClose:function(){
                                 that.getView().getModel("oCreate").setData({
                                     name:"",
