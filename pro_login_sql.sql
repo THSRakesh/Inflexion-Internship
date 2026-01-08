@@ -96,6 +96,7 @@ INSERT INTO emp_project VALUES
 
 SELECT * FROM emp_project;
 
+-- Admins Table
 CREATE TABLE user(
 	id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(50) UNIQUE NOT NULL,

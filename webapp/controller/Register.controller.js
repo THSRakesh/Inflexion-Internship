@@ -20,7 +20,7 @@ sap.ui.define([
 
         onSignUp(){
             var oData=this.getView().getModel("register").getData();
-
+            var that=this;
             $.ajax({
                 url:"http://localhost:8080/register",
                 method:"POST",
@@ -33,7 +33,17 @@ sap.ui.define([
                     lastName:oData.lastName
                 }),
                 success: function(response){
-                    MessageToast.show(response);
+                    MessageToast.show(response, {
+                        duration: 2000
+                    });
+                    that.getView().getModel("register").setData({
+                        email:"",
+                        password:"",
+                        confirmPassword:"",
+                        firstName:"",
+                        lastName:""
+                    })
+                    that.oRouter.navTo("Login");
                 },
                 error: function(err){
                     MessageToast.show(err.responseText);
@@ -42,6 +52,13 @@ sap.ui.define([
         },
 
         onLogin(){
+            this.getView().getModel("register").setData({
+                email:"",
+                password:"",
+                confirmPassword:"",
+                firstName:"",
+                lastName:""
+            })
             this.oRouter.navTo("Login");
         }
     })
