@@ -56,7 +56,7 @@
                     </HBox>
                     <HBox alignItems="Center">
                         <Label text="Salary" required="true" class="labelSize sapUiSmallMarginEnd"/>
-                        <Input value="{oCreate>/salary}" placeholder="Enter Salary" width="250px" class="sapUiLargeMarginEnd" liveChange=".onSalaryLiveChange" change=".onSalaryChange" editable="{ui>/editable}"/>
+                        <Input value="{oCreate>/salary}" placeholder="Enter Salary" width="250px" class="sapUiLargeMarginEnd" change=".onSalaryChange" editable="{ui>/editable}"/>
                     </HBox>
                     <HBox alignItems="Center">
                         <Label text="Reporting to" class="labelSize sapUiSmallMarginEnd"/>

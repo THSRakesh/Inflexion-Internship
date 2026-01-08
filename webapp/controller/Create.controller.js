@@ -167,9 +167,9 @@ sap.ui.define([
                 }
             })
         },
-        onSalaryLiveChange(oEvent){
+        onSalaryChange(oEvent){
             var input=oEvent.getSource();
-            var value=input.getValue();
+            var value=input.getValue().trim();
 
             if(value=== "0"){
                 MessageBox.warning("Employee Salary cannot be 0");
@@ -181,11 +181,9 @@ sap.ui.define([
             if(!/^[0-9.]*$/.test(value)){
                 input.setValue("");
                 MessageBox.warning("Only numbers allowed");
+                value="";
             }
-        },
-        onSalaryChange(oEvent){
-            var input=oEvent.getSource();
-            var value=input.getValue().trim();
+
             if(!(value==="")){
                 value=value.replace(/^0+/,"");
                 input.setValue(value);
@@ -260,14 +258,14 @@ sap.ui.define([
             }
             aSelectedItem
                 .map(oItem=>{
-                    return oItem.getBindingContext("oCreate").getPath();
+                    return oItem.getBindingContext("oCreate").getPath(); //get the selected data 
                 })
                 .sort((a,b)=>{
-                    return parseInt(b.split("/").pop())-parseInt(a.split("/").pop());
+                    return parseInt(b.split("/").pop())-parseInt(a.split("/").pop()); // sort the selected data in descending order
                 })
                 .forEach(sPath=>{
                     var index=parseInt(sPath.split("/").pop());
-                    aProjects.splice(index,1);
+                    aProjects.splice(index,1); // remove the selected data in descending order to avoid index problems
                 });
             oModel.setProperty("/projects", aProjects);
             oTable.removeSelections(true);
