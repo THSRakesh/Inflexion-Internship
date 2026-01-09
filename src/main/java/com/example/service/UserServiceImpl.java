@@ -271,7 +271,7 @@ public class UserServiceImpl implements UserService{
         for(Map<String, Object>projects:employeeDAO.getProjects()){
             projectIds.add(projects.get("projectId").toString());
         }
-        String projectsJson=objectMapper.writeValueAsString(projectIds);
+        String projectsJson=objectMapper.writeValueAsString(projectIds);  // It is used to convert List to JSON
 
         query.setParameter(1, employeeDAO.getId());
         query.setParameter(2, employeeDAO.getName());
@@ -337,7 +337,7 @@ public class UserServiceImpl implements UserService{
         for(Map<String, Object>projects:employeeDAO.getProjects()){
             projectIds.add(projects.get("projectId").toString());
         }
-        String projectsJson=objectMapper.writeValueAsString(projectIds);
+        String projectsJson=objectMapper.writeValueAsString(projectIds);  //It is used to convert List to JSON
 
         query.setParameter(1, employeeDAO.getId());
         query.setParameter(2, employeeDAO.getName());
